@@ -1,9 +1,16 @@
+// Config-JSON laden
+import config from "../config/config.json"
+
 import http from "http"
 import url from "url"
 
 import { Listener } from "./listener"
 
 let clients = []
+
+// Prozess einrichten
+process.stdin.resume()
+process.stdin.setEncoding("utf8")
 
 http.createServer((req, res) => {
 
@@ -14,7 +21,7 @@ http.createServer((req, res) => {
         "Transfer-Encoding": "chunked"
     })
 
-    let client = new Listener(res, mount)
+    let client = new Listener(config, res, mount)
     clients.push(client)
 
     // Add the response to the clients array to receive streaming
@@ -28,10 +35,14 @@ http.createServer((req, res) => {
         removeClient(client)
     })
 
+    client.on("close", () => {
+        removeClient(client)
+    })
+
     console.log("Client connected -> streaming")
 
-}).listen(9000, () => {
-    console.log("Server listening")
+}).listen(config.server.port, () => {
+    console.log("> Server listening on port " + config.server.port)
 })
 
 function removeClient(client) {
@@ -46,3 +57,26 @@ function removeClient(client) {
 
     console.log("Client disconnected")
 }
+
+
+// Auf Eingaben von der Konsole reagieren. Im Moment ist folgendes implementiert: quit | info
+process.stdin.on("data", (text) => {
+    //logger.info('received data:', util.inspect(text));
+    switch (text) {
+
+        case "quit\n":
+            process.exit()
+            break
+
+        case "info\n":
+            console.log(`Clients insgesamt: ${clients.length}`)
+            break
+
+        case "meta\n":
+            for (let client of clients) {
+                console.log(`Client: ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
+            }
+            break
+    }
+
+})

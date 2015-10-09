@@ -1,0 +1,12 @@
+{
+  "logfile": "errors.log",
+
+  "upstream": {
+    "host": "http://www.hoerradar.de"
+  },
+
+  "server": {
+    "port": 9000
+  }
+
+}
