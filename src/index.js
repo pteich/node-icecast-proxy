@@ -3,6 +3,7 @@ import config from "../config/config.json"
 
 import http from "http"
 import url from "url"
+import util from "util"
 
 import { Listener } from "./listener"
 
@@ -14,32 +15,35 @@ process.stdin.setEncoding("utf8")
 
 http.createServer((req, res) => {
 
-    let mount = url.parse(req.url).pathname
+    let path = url.parse(req.url).pathname
 
-    res.writeHead(200, {
-        "Content-Type": "audio/mpeg",
-        "Transfer-Encoding": "chunked"
-    })
+    switch (path) {
 
-    let client = new Listener(config, res, mount)
-    clients.push(client)
+    case "/stats/clients":
+        statsHandler(res)
+        break
 
-    // Add the response to the clients array to receive streaming
-    res.connection.on("close", () => {
-        removeClient(client)
-    })
-    res.connection.on("error", () => {
-        removeClient(client)
-    })
-    res.connection.on("timeout", () => {
-        removeClient(client)
-    })
+    default:
+        let client = new Listener(config, res, path)
+        clients.push(client)
 
-    client.on("close", () => {
-        removeClient(client)
-    })
+        // Add the response to the clients array to receive streaming
+        res.connection.on("close", () => {
+            removeClient(client)
+        })
+        res.connection.on("error", () => {
+            removeClient(client)
+        })
+        res.connection.on("timeout", () => {
+            removeClient(client)
+        })
 
-    console.log("Client connected -> streaming")
+        client.on("close", () => {
+            removeClient(client)
+        })
+
+        console.log("Client connected -> streaming")
+    }
 
 }).listen(config.server.port, () => {
     console.log("> Server listening on port " + config.server.port)
@@ -72,6 +76,10 @@ process.stdin.on("data", (text) => {
             console.log(`Clients insgesamt: ${clients.length}`)
             break
 
+        case "memory\n":
+            console.log(util.inspect(process.memoryUsage()))
+            break
+
         case "meta\n":
             for (let client of clients) {
                 console.log(`Client: ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
@@ -80,3 +88,22 @@ process.stdin.on("data", (text) => {
     }
 
 })
+
+function statsHandler(res) {
+    res.writeHead(200, {
+        "Content-Type": "application/json"
+    })
+
+    let stats = []
+    let now = new Date()
+
+    for (let client of clients) {
+        stats.push({
+            mount: client.mount,
+            start: client.connectStart,
+            duration: now-client.connectStart,
+            meta: client.getMeta()
+        })
+    }
+    res.end(JSON.stringify(stats))
+}

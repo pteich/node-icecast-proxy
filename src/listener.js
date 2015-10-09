@@ -20,6 +20,8 @@ export class Listener extends Emitter {
 
             if (res.headers["icy-url"]) {
 
+                this.connectStart = new Date()
+
                 this.clientres.writeHead(200, {
                     "Content-Type": "audio/mpeg",
                     "Transfer-Encoding": "chunked"
