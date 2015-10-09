@@ -42,7 +42,7 @@ http.createServer((req, res) => {
             removeClient(client)
         })
 
-        console.log("Client connected -> streaming")
+        console.log(`Client ${req.connection.remoteAddress} connected -> streaming ${path}`)
     }
 
 }).listen(config.server.port, () => {
