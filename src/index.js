@@ -4,6 +4,7 @@ import config from "../config/config.json"
 import http from "http"
 import url from "url"
 import util from "util"
+import posix from "posix"
 
 import { Listener } from "./listener"
 
@@ -12,6 +13,7 @@ let clients = []
 // Prozess einrichten
 process.stdin.resume()
 process.stdin.setEncoding("utf8")
+posix.setrlimit("nofile", { soft: 10000 })
 
 http.createServer((req, res) => {
 
@@ -68,23 +70,23 @@ process.stdin.on("data", (text) => {
     //logger.info('received data:', util.inspect(text));
     switch (text) {
 
-        case "quit\n":
-            process.exit()
-            break
+    case "quit\n":
+        process.exit()
+        break
 
-        case "info\n":
-            console.log(`Clients insgesamt: ${clients.length}`)
-            break
+    case "info\n":
+        console.log(`Clients insgesamt: ${clients.length}`)
+        break
 
-        case "memory\n":
-            console.log(util.inspect(process.memoryUsage()))
-            break
+    case "memory\n":
+        console.log(util.inspect(process.memoryUsage()))
+        break
 
-        case "meta\n":
-            for (let client of clients) {
-                console.log(`Client:${client.remoteAddress} ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
-            }
-            break
+    case "meta\n":
+        for (let client of clients) {
+            console.log(`Client:${client.remoteAddress} ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
+        }
+        break
     }
 
 })

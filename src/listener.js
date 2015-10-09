@@ -14,6 +14,8 @@ export class Listener extends Emitter {
         this.meta = {}
         this.remoteAddress = clientreq.connection.remoteAddress
 
+        clientreq.socket.setNoDelay()
+
         this.connectIcecast(parsedUrl.path)
     }
 
