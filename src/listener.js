@@ -3,21 +3,22 @@ import { Emitter } from "emmett"
 
 export class Listener extends Emitter {
 
-    constructor(config, clientreq, clientres, mount) {
+    constructor(config, clientreq, clientres, parsedUrl) {
 
         super()
 
         this.IcecastHost = config.upstream.host
         this.clientres = clientres
-        this.mount = mount
+        this.mount = parsedUrl.pathname
+        this.url = parsedUrl.path
         this.meta = {}
         this.remoteAddress = clientreq.connection.remoteAddress
 
-        this.connectIcecast(this.mount)
+        this.connectIcecast(parsedUrl.path)
     }
 
-    connectIcecast(mount) {
-        this.icecastreq = icecast.get(this.IcecastHost + mount, (res) => {
+    connectIcecast(url) {
+        this.icecastreq = icecast.get(this.IcecastHost + url, (res) => {
 
             if (res.headers["icy-url"]) {
 

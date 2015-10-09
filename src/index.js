@@ -15,16 +15,16 @@ process.stdin.setEncoding("utf8")
 
 http.createServer((req, res) => {
 
-    let path = url.parse(req.url).pathname
+    let parsedUrl = url.parse(req.url)
 
-    switch (path) {
+    switch (parsedUrl.pathname) {
 
     case "/stats/clients":
         statsHandler(res)
         break
 
     default:
-        let client = new Listener(config, req, res, path)
+        let client = new Listener(config, req, res, parsedUrl)
         clients.push(client)
 
         // Add the response to the clients array to receive streaming
@@ -42,7 +42,7 @@ http.createServer((req, res) => {
             removeClient(client)
         })
 
-        console.log(`Client ${req.connection.remoteAddress} connected -> streaming ${path}`)
+        console.log(`Client ${req.connection.remoteAddress} connected -> streaming ${parsedUrl.pathname}`)
     }
 
 }).listen(config.server.port, () => {
@@ -101,6 +101,7 @@ function statsHandler(res) {
         stats.push({
             ip: client.remoteAddress,
             mount: client.mount,
+            url: client.url,
             start: client.connectStart,
             duration: now-client.connectStart,
             meta: client.getMeta()
