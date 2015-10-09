@@ -13,8 +13,10 @@ let clients = []
 process.stdin.resume()
 process.stdin.setEncoding("utf8")
 
+/*
 var posix = require("posix")
 posix.setrlimit("nofile", { soft: 10000 })
+*/
 
 http.createServer((req, res) => {
 
