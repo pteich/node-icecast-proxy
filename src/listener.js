@@ -12,11 +12,6 @@ export class Listener extends Emitter {
         this.mount = mount
         this.meta = {}
 
-        this.clientres.writeHead(200, {
-            "Content-Type": "audio/mpeg",
-            "Transfer-Encoding": "chunked"
-        })
-
         this.connectIcecast(this.mount)
     }
 
@@ -24,6 +19,12 @@ export class Listener extends Emitter {
         this.icecastreq = icecast.get(this.IcecastHost + mount, (res) => {
 
             if (res.headers["icy-url"]) {
+
+                this.clientres.writeHead(200, {
+                    "Content-Type": "audio/mpeg",
+                    "Transfer-Encoding": "chunked"
+                })
+
                 // receiving data from Icecast event
                 res.on("data", (data) => {
                     this.clientres.write(data)
@@ -39,6 +40,8 @@ export class Listener extends Emitter {
                 })
 
             } else {
+                this.clientres.writeHead(404)
+                this.clientres.end()
                 this.emit("close")
             }
 
