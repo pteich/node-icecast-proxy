@@ -24,7 +24,7 @@ http.createServer((req, res) => {
         break
 
     default:
-        let client = new Listener(config, res, path)
+        let client = new Listener(config, req, res, path)
         clients.push(client)
 
         // Add the response to the clients array to receive streaming
@@ -82,7 +82,7 @@ process.stdin.on("data", (text) => {
 
         case "meta\n":
             for (let client of clients) {
-                console.log(`Client: ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
+                console.log(`Client:${client.remoteAddress} ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
             }
             break
     }
@@ -99,6 +99,7 @@ function statsHandler(res) {
 
     for (let client of clients) {
         stats.push({
+            ip: client.remoteAddress,
             mount: client.mount,
             start: client.connectStart,
             duration: now-client.connectStart,

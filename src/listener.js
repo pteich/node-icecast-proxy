@@ -3,7 +3,7 @@ import { Emitter } from "emmett"
 
 export class Listener extends Emitter {
 
-    constructor(config, clientres, mount) {
+    constructor(config, clientreq, clientres, mount) {
 
         super()
 
@@ -11,6 +11,7 @@ export class Listener extends Emitter {
         this.clientres = clientres
         this.mount = mount
         this.meta = {}
+        this.remoteAddress = clientreq.connection.remoteAddress
 
         this.connectIcecast(this.mount)
     }
