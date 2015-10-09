@@ -4,7 +4,6 @@ import config from "../config/config.json"
 import http from "http"
 import url from "url"
 import util from "util"
-import posix from "posix"
 
 import { Listener } from "./listener"
 
@@ -13,6 +12,8 @@ let clients = []
 // Prozess einrichten
 process.stdin.resume()
 process.stdin.setEncoding("utf8")
+
+var posix = require("posix")
 posix.setrlimit("nofile", { soft: 10000 })
 
 http.createServer((req, res) => {
