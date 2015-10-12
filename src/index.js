@@ -67,6 +67,9 @@ function removeClient(client) {
     console.log("Client disconnected")
 }
 
+setInterval(() => {
+    global.gc()
+},config.gcinterval*1000)
 
 // Auf Eingaben von der Konsole reagieren. Im Moment ist folgendes implementiert: quit | info
 process.stdin.on("data", (text) => {

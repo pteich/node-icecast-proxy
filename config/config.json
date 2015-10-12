@@ -1,6 +1,8 @@
 {
   "logfile": "errors.log",
 
+  "gcinterval": 60,
+
   "upstream": {
     "host": "http://www.hoerradar.de"
   },
