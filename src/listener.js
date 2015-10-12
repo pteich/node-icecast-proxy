@@ -22,6 +22,8 @@ export class Listener extends Emitter {
     connectIcecast(url) {
         this.icecastreq = icecast.get(this.IcecastHost + url, (res) => {
 
+            this.icecastres = res
+
             if (res.headers["icy-url"]) {
 
                 this.connectStart = new Date()
@@ -67,7 +69,8 @@ export class Listener extends Emitter {
 
     remove() {
         console.log("Remove Icecast-Connection")
-        this.icecastreq.end()
+        this.icecastres.removeAllListeners("data")
+        this.icecastreq.destroy()
     }
 
 }
