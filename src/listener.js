@@ -7,7 +7,7 @@ export class Listener extends Emitter {
 
         super()
 
-        this.IcecastHost = config.upstream.host
+        this.config = config
         this.clientres = clientres
         this.mount = parsedUrl.pathname
         this.url = parsedUrl.path
@@ -20,7 +20,19 @@ export class Listener extends Emitter {
     }
 
     connectIcecast(url) {
-        this.icecastreq = icecast.get(this.IcecastHost + url, (res) => {
+
+        let options = {
+            "hostname": this.config.upstream.host,
+            "port": this.config.upstream.port,
+            "path": url,
+            "method": "GET",
+            "headers": {
+                "X-Forwarded-For": this.remoteAddress
+            },
+            "agent": false
+        }
+
+        this.icecastreq = icecast.request(options, (res) => {
 
             this.icecastres = res
 
@@ -47,6 +59,10 @@ export class Listener extends Emitter {
                     this.emit("close")
                 })
 
+                res.on("error", () => {
+                    this.emit("close")
+                })
+
             } else {
                 this.clientres.writeHead(404)
                 this.clientres.end()
@@ -54,6 +70,12 @@ export class Listener extends Emitter {
             }
 
         })
+
+        this.icecastreq.on("error", (err) => {
+            console.log(`Error connecting ${url} auf ${this.config.upstream.host} - ${err}`)
+        })
+
+        this.icecastreq.end()
     }
 
     setMeta(data) {

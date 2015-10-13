@@ -4,7 +4,8 @@
   "gcinterval": 60,
 
   "upstream": {
-    "host": "http://www.hoerradar.de"
+    "host": "www.hoerradar.de",
+    "port": 80
   },
 
   "server": {
