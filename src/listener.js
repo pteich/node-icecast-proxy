@@ -71,6 +71,8 @@ export class Listener extends Emitter {
         console.log("Remove Icecast-Connection")
         this.icecastres.removeAllListeners("data")
         this.icecastreq.destroy()
+        this.icecastreq = null
+        this.icecastres = null
     }
 
 }
