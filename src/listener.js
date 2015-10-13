@@ -72,7 +72,9 @@ export class Listener extends Emitter {
         if (this.icecastres) {
             this.icecastres.removeAllListeners("data")
         }
-        this.icecastreq.destroy()
+        if (this.icecastreq) {
+            this.icecastreq.destroy()
+        }
     }
 
 }
