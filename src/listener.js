@@ -27,7 +27,8 @@ export class Listener extends Emitter {
             "path": url,
             "method": "GET",
             "headers": {
-                "X-Forwarded-For": this.remoteAddress
+                "X-Forwarded-For": this.remoteAddress,
+                "User-Agent": "streamABC StreamProxy Ver:1.0"
             },
             "agent": false
         }
