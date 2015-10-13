@@ -1,5 +1,6 @@
 import icecast from "icy"
 import { Emitter } from "emmett"
+import * as functions from "./functions"
 
 export class Listener extends Emitter {
 
@@ -12,7 +13,7 @@ export class Listener extends Emitter {
         this.mount = parsedUrl.pathname
         this.url = parsedUrl.path
         this.meta = {}
-        this.remoteAddress = clientreq.connection.remoteAddress
+        this.remoteAddress = functions.getRemoteAddress(clientreq.connection.remoteAddress)
 
         clientreq.socket.setNoDelay()
 

@@ -6,6 +6,7 @@ import url from "url"
 import util from "util"
 
 import { Listener } from "./listener"
+import * as functions from "./functions"
 
 let clients = []
 
@@ -90,7 +91,7 @@ process.stdin.on("data", (text) => {
 
     case "meta\n":
         for (let client of clients) {
-            console.log(`Client:${client.remoteAddress} ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
+            console.log(`Client:${functions.getRemoteAddress(client.remoteAddress)} ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
         }
         break
     }
@@ -117,3 +118,4 @@ function statsHandler(res) {
     }
     res.end(JSON.stringify(stats))
 }
+
