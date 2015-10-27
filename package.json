@@ -7,11 +7,7 @@
     "start": "babel-node --nouse-idle-notification --expose-gc --max-new-space-size=2048 --max-old-space-size=8192 ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@registry.streamabc.com:10022/streamabc/streamproxy.git"
-  },
-  "author": "",
+  "author": "Peter Teich <peter.teich@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "babel-eslint": "^4.1.1",
