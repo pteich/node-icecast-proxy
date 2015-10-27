@@ -1,4 +1,4 @@
-# Icecast proxy server for NodeJS (ES2015/ES6 style)
+# Icecast proxy server for NodeJS
 
 Icecast proxy server that proxies every connection to an existing Icecast (or Shoutcast) server and provides
 statistics about every connection and meta-data over a simple HTTP-API.
