@@ -4,7 +4,7 @@
   "gcinterval": 60,
 
   "upstream": {
-    "host": "www.hoerradar.de",
+    "host": "icecast-server-url",
     "port": 80
   },
 
