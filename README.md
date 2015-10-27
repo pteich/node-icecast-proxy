@@ -7,7 +7,7 @@ This proxy can be used to live track listeners and meta-data on mounts that deli
 
 This script uses ES2015/ES6 together with Babel (https://babeljs.io).
 
-[![Dependency Status](https://gemnasium.com/pteich/node-icecast-proxy.svg)](https://gemnasium.com/pteich/node-icecast-proxy)
+[![Code Climate](https://codeclimate.com/github/pteich/node-icecast-proxy/badges/gpa.svg)](https://codeclimate.com/github/pteich/node-icecast-proxy) [![Dependency Status](https://gemnasium.com/pteich/node-icecast-proxy.svg)](https://gemnasium.com/pteich/node-icecast-proxy)
 
 ## Installation
 
