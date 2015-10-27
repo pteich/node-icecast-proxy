@@ -1,4 +1,4 @@
-// Config-JSON laden
+// load config
 import config from "../config/config.json"
 
 import http from "http"
@@ -25,6 +25,7 @@ http.createServer((req, res) => {
 
     switch (parsedUrl.pathname) {
 
+    // simple stats API
     case "/stats/clients":
         statsHandler(res)
         break
