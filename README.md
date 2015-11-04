@@ -29,4 +29,4 @@ If you can listen to an existing stream `http://original-icecast/existing-mount`
 
 ## API
 
-The proxy provides a very simple API at /stats/clients that shows all connected clients with their corresponding meta-data.
+The proxy provides a very simple API at `/stats/clients` that shows all connected clients with their corresponding meta-data.
