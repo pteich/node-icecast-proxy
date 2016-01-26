@@ -4,20 +4,23 @@
   "description": "NodeJS Streamproxy",
   "main": "src/index.js",
   "scripts": {
-    "start": "babel-node --nouse-idle-notification --expose-gc --max-new-space-size=2048 --max-old-space-size=8192 ./src/index.js",
+    "start": "node --nouse-idle-notification --expose-gc --max-new-space-size=2048 --max-old-space-size=8192 ./src/run.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Peter Teich <peter.teich@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "babel-eslint": "^4.1.3",
-    "eslint": "^1.8.0"
+    "babel-cli": "^6.4.5",
+    "babel-eslint": "^5.0.0-beta6",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-register": "^6.4.3",
+    "eslint": "^1.10.3"
   },
   "dependencies": {
-    "babel": "^6.0.15",
+    "babel": "^6.3.26",
     "emmett": "^3.1.1",
-    "icy": "^2.0.0",
-    "ipaddr.js": "^1.0.3",
+    "icy": "^2.1.0",
+    "ipaddr.js": "^1.0.5",
     "lame": "^1.2.3",
     "posix": "^4.0.0"
   }
