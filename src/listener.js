@@ -35,50 +35,66 @@ export class Listener extends Emitter {
             "agent": false
         }
 
-        this.icecastreq = icecast.request(options, (res) => {
+        try {
+            this.icecastreq = icecast.request(options, (res) => {
 
-            this.icecastres = res
+                this.icecastres = res
 
-            if (res.headers["icy-metaint"] || res.headers["icy-name"]) {
+                if (res.headers["icy-metaint"] || res.headers["icy-name"]) {
 
-                this.connectStart = new Date()
+                    this.connectStart = new Date()
 
-                this.clientres.writeHead(200, {
-                    "Content-Type": "audio/mpeg",
-                    "Transfer-Encoding": "chunked"
-                })
+                    this.clientres.writeHead(200, {
+                        "Content-Type": res.headers["content-type"],
+                        "Cache-control": "no-cache, no-store",
+                        "Pragma": "no-cache",
+                        "Expires": "Mon, 26 Jul 1997 05:00:00 GMT",
+                        "Accept-Ranges": "none"
+                    })
 
-                // receiving data from Icecast event
-                res.on("data", (data) => {
-                    this.clientres.write(data)
-                })
+                    // receiving data from Icecast event
+                    res.on("data", (data) => {
+                        this.clientres.write(data)
+                    })
 
-                // changing metadata event
-                res.on("metadata", (metadata) => {
-                    this.setMeta(icecast.parse(metadata).StreamTitle)
-                })
+                    // changing metadata event
+                    res.on("metadata", (metadata) => {
+                        this.setMeta(icecast.parse(metadata).StreamTitle)
+                    })
 
-                res.on("close", () => {
+                    res.on("close", () => {
+                        this.emit("close")
+                    })
+
+                    res.on("error", () => {
+                        this.emit("close")
+                    })
+
+                } else {
+                    this.clientres.writeHead(404)
+                    this.clientres.end()
                     this.emit("close")
-                })
+                }
 
-                res.on("error", () => {
-                    this.emit("close")
-                })
+            })
 
-            } else {
-                this.clientres.writeHead(404)
+            this.icecastreq.on("error", (err) => {
+                console.log(`Error connecting ${url} auf ${this.config.upstream.host} - ${err}`)
+                this.clientres.writeHead(500)
                 this.clientres.end()
-                this.emit("close")
-            }
+                this.emit("close")            
+            })
 
-        })
+            this.icecastreq.end()
 
-        this.icecastreq.on("error", (err) => {
-            console.log(`Error connecting ${url} auf ${this.config.upstream.host} - ${err}`)
-        })
-
-        this.icecastreq.end()
+        } catch(err) {
+            if (this.icecastres) {
+                this.icecastres.end()
+            }            
+            this.clientres.writeHead(500)
+            this.clientres.end()
+            this.emit("close")
+        }
     }
 
     setMeta(data) {
