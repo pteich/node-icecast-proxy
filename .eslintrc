@@ -1,29 +1,30 @@
 {
-  "rules": {
-    "indent": [
-      2,
-      4
-    ],
-    "quotes": [
-      2,
-      "double"
-    ],
-    "linebreak-style": [
-      2,
-      "unix"
-    ],
-    "semi": [
-      2,
-      "never"
-    ],
-    "no-console": 0
-  },
-  "ecmaFeatures": {
-    "modules": true
-  },
+  "plugins": ["node"],
+  "extends": ["eslint:recommended", "plugin:node/recommended"],
   "env": {
     "es6": true,
     "node": true
   },
-  "extends": "eslint:recommended"
+
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "generators": false,
+      "modules": true,
+      "objectLiteralDuplicateProperties": false
+    }
+  },
+
+  "rules": {
+    "semi": [
+      2,
+      "never"
+    ],
+    "no-console": 0,
+    "node/exports-style": ["error", "module.exports"],
+    "node/no-unpublished-bin": "error",
+    "node/process-exit-as-throw": "error"    
+  }
+
 }

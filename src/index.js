@@ -25,31 +25,32 @@ http.createServer((req, res) => {
 
     switch (parsedUrl.pathname) {
 
-    // simple stats API
-    case "/stats/clients":
-        statsHandler(res)
-        break
+        // simple stats API
+        case "/stats/clients": {
+            statsHandler(res)
+            break
+        }
+        default: {
+            let client = new Listener(config, req, res, parsedUrl)
+            clients.push(client)
 
-    default:
-        let client = new Listener(config, req, res, parsedUrl)
-        clients.push(client)
+            // Add the response to the clients array to receive streaming
+            res.connection.on("close", () => {
+                removeClient(client)
+            })
+            res.connection.on("error", () => {
+                removeClient(client)
+            })
+            res.connection.on("timeout", () => {
+                removeClient(client)
+            })
 
-        // Add the response to the clients array to receive streaming
-        res.connection.on("close", () => {
-            removeClient(client)
-        })
-        res.connection.on("error", () => {
-            removeClient(client)
-        })
-        res.connection.on("timeout", () => {
-            removeClient(client)
-        })
+            client.on("close", () => {
+                removeClient(client)
+            })
 
-        client.on("close", () => {
-            removeClient(client)
-        })
-
-        console.log(`Client ${req.connection.remoteAddress} connected -> streaming ${parsedUrl.pathname}`)
+            console.log(`Client ${req.connection.remoteAddress} connected -> streaming ${parsedUrl.pathname}`)
+        }
     }
 
 }).listen(config.server.port, () => {
@@ -78,23 +79,23 @@ process.stdin.on("data", (text) => {
     //logger.info('received data:', util.inspect(text));
     switch (text) {
 
-    case "quit\n":
-        process.exit()
-        break
-
-    case "info\n":
-        console.log(`Clients insgesamt: ${clients.length}`)
-        break
-
-    case "memory\n":
-        console.log(util.inspect(process.memoryUsage()))
-        break
-
-    case "meta\n":
-        for (let client of clients) {
-            console.log(`Client:${functions.getRemoteAddress(client.remoteAddress)} ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
+        case "quit\n": {       
+            process.exit()
         }
-        break
+        case "info\n": {
+            console.log(`Clients insgesamt: ${clients.length}`)
+            break
+        }
+        case "memory\n": {
+            console.log(util.inspect(process.memoryUsage()))
+            break
+        }
+        case "meta\n": {
+            for (let client of clients) {
+                console.log(`Client:${functions.getRemoteAddress(client.remoteAddress)} ${client.mount} Meta: ${client.getMeta().timestamp} ${client.getMeta().data}`)
+            }
+            break
+        }
     }
 
 })
