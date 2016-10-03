@@ -1,11 +1,12 @@
 # Icecast proxy server for NodeJS
 
-Icecast proxy server that proxies every connection to an existing Icecast (or Shoutcast) server and provides
-statistics about every connection and meta-data over a simple HTTP-API.
+Icecast proxy server that proxies every connection to an existing upstream Icecast (or Shoutcast) server and provides
+statistics about every connection and meta-data over a simple HTTP-API. This proxy responds with a raw MP3 stream without
+meta data (best for browsers).
 
-This proxy can be used to live track listeners and meta-data on mounts that delivers per-user streams over Icecast.  
+This proxy can be used to enable live tracking of listeners and meta-data on mounts that delivers per-user streams over Icecast.  
 
-This script uses ES2015/ES6 together with Babel (https://babeljs.io).
+This script uses ES2015/ES6 syntax and uses Babel for ES6 module style loading.
 
 [![Code Climate](https://codeclimate.com/github/pteich/node-icecast-proxy/badges/gpa.svg)](https://codeclimate.com/github/pteich/node-icecast-proxy) [![Dependency Status](https://gemnasium.com/pteich/node-icecast-proxy.svg)](https://gemnasium.com/pteich/node-icecast-proxy)
 

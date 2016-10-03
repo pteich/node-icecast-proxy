@@ -7,7 +7,7 @@
     "node": ">=6"
   },
   "scripts": {
-    "start": "node --nouse-idle-notification --expose-gc --max-new-space-size=2048 --max-old-space-size=8192 ./src/index.js",
+    "start": "node --nouse-idle-notification --expose-gc ./src/run.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Peter Teich <peter.teich@gmail.com>",
@@ -17,6 +17,8 @@
     "eslint-plugin-node": "^2.1.2"
   },
   "dependencies": {
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.14.0",
+    "babel-register": "^6.14.0",    
     "emmett": "^3.1.1",
     "icy": "^2.1.0",
     "ipaddr.js": "^1.0.5",
