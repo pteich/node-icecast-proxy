@@ -33,6 +33,8 @@ http.createServer((req, res) => {
 
         let parsedUrl = url.parse(req.url)
 
+        res.useChunkedEncodingByDefault = false
+
         switch (parsedUrl.pathname) {
 
             // simple stats API
@@ -41,23 +43,19 @@ http.createServer((req, res) => {
                 break
             }
             default: {
+                // Add the response to the clients array to receive streaming                
                 let client = new Listener(config, req, res, parsedUrl)
                 clients.push(client)
 
-                // Add the response to the clients array to receive streaming
-                res.connection.on("close", () => {
-                    removeClient(client)
-                })
-                res.connection.on("error", () => {
-                    removeClient(client)
-                })
-                res.connection.on("timeout", () => {
-                    removeClient(client)
-                })
+                res.on("error", () => removeClient(client))
+                req.on("error", () => removeClient(client))
 
-                client.on("close", () => {
-                    removeClient(client)
-                })
+                if (res.connection) {
+                    res.connection.once("close", () => removeClient(client))
+                    res.connection.once("timeout", () => removeClient(client))
+                }
+
+                client.once("close", () => removeClient(client))
 
                 console.log(`Client ${req.connection.remoteAddress} connected -> streaming ${parsedUrl.pathname}`)
             }
@@ -71,14 +69,12 @@ http.createServer((req, res) => {
 function removeClient(client) {
 
     client.remove()
-
     clients = clients.filter((myclient) => {
         if (myclient !== client) return myclient
     })
-
     client = null
-
     console.log("Client disconnected")
+    
 }
 
 setInterval(() => {
