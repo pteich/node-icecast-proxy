@@ -29,7 +29,8 @@ export class Listener extends Emitter {
             "method": "GET",
             "headers": {
                 "X-Forwarded-For": this.remoteAddress,
-                "User-Agent": "streamABC StreamProxy Ver:1.0"
+                "User-Agent": this.userAgent ? this.userAgent : "Node StreamProxy",
+                "Referrer": this.referrer ? this.referrer : ""
             },
             "agent": false
         }
@@ -38,7 +39,7 @@ export class Listener extends Emitter {
 
             this.icecastres = res
 
-            if (res.headers["icy-url"]) {
+            if (res.headers["icy-metaint"] || res.headers["icy-name"]) {
 
                 this.connectStart = new Date()
 
