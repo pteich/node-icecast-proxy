@@ -21,35 +21,46 @@ posix.setrlimit("nofile", { soft: 10000, hard: 10000 })
 
 http.createServer((req, res) => {
 
-    let parsedUrl = url.parse(req.url)
+    // we only respond to GET requests, discard any others
+    if (req.method !== "GET") {
 
-    switch (parsedUrl.pathname) {
-
-        // simple stats API
-        case "/stats/clients": {
-            statsHandler(res)
-            break
-        }
-        default: {
-            let client = new Listener(config, req, res, parsedUrl)
-            clients.push(client)
-
-            // Add the response to the clients array to receive streaming
-            res.connection.on("close", () => {
-                removeClient(client)
+            res.writeHead(405, {
+                "Content-Type": "text/plain"
             })
-            res.connection.on("error", () => {
-                removeClient(client)
-            })
-            res.connection.on("timeout", () => {
-                removeClient(client)
-            })
+            res.end("method not allowed")
 
-            client.on("close", () => {
-                removeClient(client)
-            })
+    } else {
 
-            console.log(`Client ${req.connection.remoteAddress} connected -> streaming ${parsedUrl.pathname}`)
+        let parsedUrl = url.parse(req.url)
+
+        switch (parsedUrl.pathname) {
+
+            // simple stats API
+            case "/stats/clients": {
+                statsHandler(res)
+                break
+            }
+            default: {
+                let client = new Listener(config, req, res, parsedUrl)
+                clients.push(client)
+
+                // Add the response to the clients array to receive streaming
+                res.connection.on("close", () => {
+                    removeClient(client)
+                })
+                res.connection.on("error", () => {
+                    removeClient(client)
+                })
+                res.connection.on("timeout", () => {
+                    removeClient(client)
+                })
+
+                client.on("close", () => {
+                    removeClient(client)
+                })
+
+                console.log(`Client ${req.connection.remoteAddress} connected -> streaming ${parsedUrl.pathname}`)
+            }
         }
     }
 
